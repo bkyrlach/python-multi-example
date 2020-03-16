@@ -2,19 +2,26 @@ from multiprocessing import Process, Queue, Lock
 import threading, time
 import lights;
 import motor;
+import comms;
 
 lq = Queue()
 mq = Queue()
+sq = Queue()
+
 lights = lights.Lights()
 motor = motor.Motor()
+comms = comms.Comms()
 
 if __name__ == '__main__':
   print("Hello")
 
+  comms_process = Process(target=comms.start, args=( sq, ))
+  comms_process.start()
+
   light_process = Process(target=lights.start, args=( lq, ))
   light_process.start()
 
-  motor_process = Process(target=motor.startController, args=(mq, ))
+  motor_process = Process(target=motor.startController, args=( mq, sq ))
   motor_process.start()
 
   done = False

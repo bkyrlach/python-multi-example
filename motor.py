@@ -2,7 +2,7 @@ from multiprocessing import Process, Value
 import threading, time
 
 class Motor:
-  def startController(self, q):
+  def startController(self, q, sq):
     speed = Value('d', 0.0)
     run_process = Process(target=self.start, args=( speed, ))
     run_process.start()
@@ -13,6 +13,7 @@ class Motor:
         speed.value = -1
         done = True
       else:
+        sq.put("New speed is " + m)
         speed.value = float(m)
         
   def start(self, speed):
